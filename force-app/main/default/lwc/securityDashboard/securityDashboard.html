@@ -35,16 +35,6 @@
 
                 <div class="slds-grid slds-wrap slds-gutters">
 
-                    <!-- Incident Name -->
-                    <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
-                        <lightning-input
-                            label="Incident Name"
-                            value={incidentName}
-                            onchange={handleIncidentName}
-                            required>
-                        </lightning-input>
-                    </div>
-
                     <!-- Threat Type -->
                     <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
                         <lightning-input
@@ -91,27 +81,84 @@
                         </lightning-combobox>
                     </div>
 
-                    <!-- Attack Type -->
-                    <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
-                        <lightning-input
-                        label="Description"
-                        value={incidentName}
-                        onchange={handleIncidentName}
-                        placeholder="Describe the security incident"
-                         required>
-                        </lightning-input>
+                    <!-- Description -->
+                    <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
+                        <lightning-textarea
+                            label="Description"
+                            value={description}
+                            onchange={handleDescription}
+                            placeholder="Describe the security incident"
+                            required>
+                        </lightning-textarea>
+                    </div>
+
+                    <!-- AI Recommendation -->
+                    <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
+                        <lightning-textarea
+                            label="AI Recommendation"
+                            value={recommendation}
+                            onchange={handleRecommendation}
+                            placeholder="Recommended security action">
+                        </lightning-textarea>
                     </div>
 
                 </div>
 
                 <!-- Create Button -->
                 <div class="slds-m-top_medium">
+
                     <lightning-button
                         variant="brand"
                         label="Create Security Alert"
                         icon-name="utility:add"
                         onclick={handleCreateAlert}>
                     </lightning-button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Status Management -->
+            <div class="slds-box slds-theme_default slds-m-top_medium">
+
+                <h2 class="slds-text-heading_medium slds-m-bottom_medium">
+                    Update Alert Status
+                </h2>
+
+                <div class="slds-grid slds-wrap slds-gutters">
+
+                    <!-- Select Alert -->
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox
+                            label="Select Alert"
+                            value={selectedAlertId}
+                            options={alertOptions}
+                            onchange={handleAlertSelection}>
+                        </lightning-combobox>
+                    </div>
+
+                    <!-- Select Status -->
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox
+                            label="New Status"
+                            value={selectedStatus}
+                            options={statusOptions}
+                            onchange={handleStatusChange}>
+                        </lightning-combobox>
+                    </div>
+
+                </div>
+
+                <div class="slds-m-top_medium">
+
+                    <lightning-button
+                        variant="brand"
+                        label="Update Status"
+                        icon-name="utility:edit"
+                        onclick={handleUpdateStatus}>
+                    </lightning-button>
+
                 </div>
 
             </div>

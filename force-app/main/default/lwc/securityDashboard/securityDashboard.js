@@ -1,6 +1,7 @@
 import { LightningElement, wire } from 'lwc';
 import getSecurityAlerts from '@salesforce/apex/SecurityAlertController.getSecurityAlerts';
 import createSecurityAlert from '@salesforce/apex/SecurityAlertController.createSecurityAlert';
+import updateAlertStatus from '@salesforce/apex/SecurityAlertController.updateAlertStatus';
 import { refreshApex } from '@salesforce/apex';
 
 const COLUMNS = [
@@ -41,14 +42,18 @@ const COLUMNS = [
 
 export default class SecurityDashboard extends LightningElement {
 
-
-     severityOptions = [
+    severityOptions = [
         { label: 'LOW', value: 'LOW' },
         { label: 'MEDIUM', value: 'MEDIUM' },
         { label: 'HIGH', value: 'HIGH' },
         { label: 'CRITICAL', value: 'CRITICAL' }
     ];
 
+    statusOptions = [
+        { label: 'New', value: 'New' },
+        { label: 'Investigating', value: 'Investigating' },
+        { label: 'Resolved', value: 'Resolved' }
+    ];
 
     alerts = [];
     error;
@@ -64,6 +69,14 @@ export default class SecurityDashboard extends LightningElement {
     sourceIp = '';
     severity = '';
     attackType = '';
+    description = '';
+    recommendation = '';
+
+    // Status update fields
+    selectedAlertId = '';
+    selectedStatus = '';
+
+    // rest of your code...
 
     @wire(getSecurityAlerts)
     wiredAlerts(result) {
@@ -100,6 +113,12 @@ export default class SecurityDashboard extends LightningElement {
                 alert.Severity__c === 'CRITICAL'
         ).length;
     }
+    get alertOptions() {
+    return this.alerts.map(alert => ({
+        label: `${alert.Threat_Type__c} - ${alert.Source_IP__c}`,
+        value: alert.Id
+    }));
+}
 
     handleIncidentName(event) {
         this.incidentName = event.target.value;
@@ -110,7 +129,7 @@ export default class SecurityDashboard extends LightningElement {
     }
 
     handleRiskScore(event) {
-       this.riskScore = Number(event.target.value);
+        this.riskScore = Number(event.target.value);
     }
 
     handleSourceIp(event) {
@@ -124,40 +143,91 @@ export default class SecurityDashboard extends LightningElement {
     handleAttackType(event) {
         this.attackType = event.target.value;
     }
-async handleCreateAlert() {
+    handleDescription(event) {
+    this.description = event.target.value;
+}
 
-    this.isLoading = true;
-    this.error = undefined;
+    handleRecommendation(event) {
+    this.recommendation = event.target.value;
+}
 
-    try {
+    async handleCreateAlert() {
 
-        const result = await createSecurityAlert({
-            threatType: this.threatType,
-            severity: this.severity,
-            sourceIp: this.sourceIp,
-            riskScore: Number(this.riskScore),
-            description: this.incidentName,
-            recommendation: this.attackType
-        });
+        this.isLoading = true;
+        this.error = undefined;
 
-        console.log('Security Alert created:', result);
+        try {
 
-        await refreshApex(this.wiredAlertsResult);
+            const result = await createSecurityAlert({
+                threatType: this.threatType,
+                severity: this.severity,
+                sourceIp: this.sourceIp,
+                riskScore: Number(this.riskScore),
+                description: this.description,
+                recommendation: this.recommendation
+            });
 
-        this.incidentName = '';
-        this.threatType = '';
-        this.riskScore = null;
-        this.sourceIp = '';
-        this.severity = '';
-        this.attackType = '';
+            console.log('Security Alert created:', result);
 
-    } catch (error) {
+            await refreshApex(this.wiredAlertsResult);
 
-        console.error('Error creating Security Alert:', error);
-        this.error = error;
+            this.incidentName = '';
+            this.threatType = '';
+            this.riskScore = null;
+            this.sourceIp = '';
+            this.severity = '';
+            this.attackType = '';
+            this.description = '';
+            this.recommendation = '';
 
-    } finally {
+        } catch (error) {
 
-        this.isLoading = false;
+            console.error('Error creating Security Alert:', error);
+            this.error = error;
+
+        } finally {
+
+            this.isLoading = false;
+        }
+    }
+
+    handleStatusChange(event) {
+        this.selectedStatus = event.target.value;
+    }
+
+    handleAlertSelection(event) {
+        this.selectedAlertId = event.detail.value;
+    }
+
+    async handleUpdateStatus() {
+
+        if (!this.selectedAlertId || !this.selectedStatus) {
+            return;
+        }
+
+        this.isLoading = true;
+        this.error = undefined;
+
+        try {
+
+            await updateAlertStatus({
+                alertId: this.selectedAlertId,
+                newStatus: this.selectedStatus
+            });
+
+            await refreshApex(this.wiredAlertsResult);
+
+            this.selectedAlertId = '';
+            this.selectedStatus = '';
+
+        } catch (error) {
+
+            console.error('Error updating alert status:', error);
+            this.error = error;
+
+        } finally {
+
+            this.isLoading = false;
+        }
     }
 }
