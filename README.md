@@ -1,58 +1,282 @@
-# Salesforce DX Project
+# AI Security Operations Dashboard
 
-Salesforce DX is a development approach that brings source-driven development, team collaboration, and continuous integration to the Salesforce Platform. Instead of working directly in an org through a web browser, you work with metadata as source files in a local DX project, track changes in version control, and deploy through automated processes.
+## Overview
 
-This project template gets you started with the tools and structure you need to build Salesforce applications using source control, scratch orgs, and the Salesforce CLI.
+The **AI Security Operations Dashboard** is a Salesforce-based cybersecurity application designed to monitor, manage, and track security alerts in a centralized dashboard.
 
-## Prerequisites
+The project uses **Salesforce Lightning Web Components (LWC), Apex, and custom Salesforce objects** to provide security teams with an easy-to-use interface for viewing and creating cybersecurity alerts.
 
-Before you start, make sure you have:
+The dashboard displays important security information such as:
 
-- **Salesforce CLI** - Download from [developer.salesforce.com/tools/salesforcecli](https://developer.salesforce.com/tools/salesforcecli). See [Install Salesforce CLI](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm) for details.
-- **VS Code with Salesforce Extension Pack** - See [Installation Instructions](https://developer.salesforce.com/docs/platform/sfvscode-extensions/guide/install.html) for details. Includes the Agentforce Vibes extension.
-- **A development org** - Sign up for a free Developer Edition org [here](https://developer.salesforce.com/signup).
-- **Dev Hub enabled** (optional, required to create scratch orgs) - You can enable Dev Hub in your development org under Setup > Dev Hub.  See [Provide Developers Access to Salesforce DX Tools](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_setup_dx_tools.htm).
+* Threat Type
+* Severity
+* Risk Score
+* Source IP
+* Alert Status
+* Detection Time
+
+## Key Features
+
+### Security Alert Dashboard
+
+Provides a centralized view of security alerts with:
+
+* Total alert count
+* Critical alert count
+* High-risk alert count
+* Security alert table
+* Refresh functionality
+
+### Security Alert Creation
+
+Users can create security alerts by entering:
+
+* Threat Type
+* Severity
+* Source IP
+* Risk Score
+* Description
+* AI Recommendation
+
+### Alert Management
+
+Security alerts are stored as Salesforce records and can be retrieved and updated using Apex.
+
+The system automatically records:
+
+* Alert status
+* Detection timestamp
+
+### Dynamic Dashboard
+
+The Lightning Web Component automatically refreshes the alert table after a new security alert is created.
+
+## Technology Stack
+
+| Technology                | Purpose                    |
+| ------------------------- | -------------------------- |
+| Salesforce                | Cloud platform             |
+| Lightning Web Components  | User interface             |
+| Apex                      | Backend logic              |
+| Salesforce Custom Objects | Security alert storage     |
+| SOQL                      | Data retrieval             |
+| Salesforce CLI            | Development and deployment |
+| Git & GitHub              | Version control            |
+
+## Architecture
+
+```text
+User
+  |
+  v
+Lightning Web Component
+  |
+  | Create / Retrieve Alert
+  v
+Apex Controller
+  |
+  v
+Security_Alert__c
+  |
+  v
+Salesforce Database
+```
+
+## Main Components
+
+### Lightning Web Component
+
+`securityDashboard`
+
+The LWC provides the cybersecurity dashboard interface.
+
+It handles:
+
+* Displaying security alerts
+* Creating new alerts
+* Calculating alert statistics
+* Refreshing dashboard data
+* Handling user input
+
+### Apex Controller
+
+`SecurityAlertController`
+
+The Apex controller provides backend functionality for:
+
+* Creating security alerts
+* Retrieving security alerts
+* Updating alert status
+
+Main methods:
+
+```text
+createSecurityAlert()
+getSecurityAlerts()
+updateAlertStatus()
+```
+
+## Security Alert Data
+
+The application currently uses fields such as:
+
+```text
+Threat_Type__c
+Severity__c
+Source_IP__c
+Risk_Score__c
+Description__c
+AI_Recommendation__c
+Status__c
+Detected_At__c
+```
+
+## Dashboard Metrics
+
+The dashboard calculates:
+
+### Total Alerts
+
+The total number of security alerts stored in Salesforce.
+
+### Critical Alerts
+
+The number of alerts where severity is:
+
+```text
+CRITICAL
+```
+
+### High-Risk Alerts
+
+The number of alerts with:
+
+```text
+HIGH
+CRITICAL
+```
+
+## Example Security Alert
+
+```text
+Threat Type: SQL Injection
+Severity: CRITICAL
+Risk Score: 92
+Source IP: 10.10.10.5
+Status: New
+```
 
 ## Project Structure
 
-Your DX project follows this structure:
+```text
+AI-Security-Operations-Dashboard/
+│
+├── force-app/
+│   └── main/
+│       └── default/
+│           ├── classes/
+│           │   ├── SecurityAlertController.cls
+│           │   └── SecurityAlertController.cls-meta.xml
+│           │
+│           └── lwc/
+│               └── securityDashboard/
+│                   ├── securityDashboard.html
+│                   ├── securityDashboard.js
+│                   ├── securityDashboard.css
+│                   └── securityDashboard.js-meta.xml
+│
+├── sfdx-project.json
+└── README.md
+```
 
-- **`force-app/main/default/`** - Your metadata source files live in this default package directory. You can configure additional package directories in the `sfdx-project.json` file.
-- **`config/`** - Scratch org definitions and project settings
-- **`scripts/`** - Automation scripts for common tasks
-- **`sfdx-project.json`** - Project manifest that defines package directories, namespace, API version, and other project-level settings
+## Setup
 
-See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm).
+### Prerequisites
 
-## Get Started
+You need:
 
-Ready to start developing? The [Get Started with Salesforce DX](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_get_started_dx.htm) guide walks you through your first project, from creating a scratch org to creating a simple Apex class or LWC to deploying your code to a sandbox.
+* Salesforce Developer Org
+* Salesforce CLI
+* Visual Studio Code
+* Salesforce Extension Pack
+* Git
 
-## Common Salesforce CLI Commands
+### Clone the Repository
 
-Here are common CLI commands that you'll use the most:
+```bash
+git clone <your-github-repository-url>
+cd AI-Security-Operations-Dashboard
+```
 
-- `sf org login web`: Authorize an org
-- `sf org open`: Open your org in a browser
-- `sf org create scratch`: Create a scratch org
-- `sf project deploy start`: Deploy metadata to your org
-- `sf project retrieve start`: Retrieve metadata from your org
-- `sf template generate <artifact>`: Scaffold new components, such as Apex classes and triggers, LWC components, Lightning apps, and more
-- `sf apex <command>`: Run Apex tests, run anonymous Apex blocks, and view logs
-- `sf data <command>`: Work with test data
-- `sf alias <command>`: Manage org aliases
-- `sf config <command>`: Configure CLI settings
+### Authenticate Salesforce
 
-## Use Agentforce Vibes to Build Lightning Apps
+```bash
+sf org login web
+```
 
-Transform your ideas into custom Lightning apps that extend CRM workflows directly in Lightning Experience. Through natural conversations with Agentforce Vibes, implement custom objects and fields, complex business logic, and dynamic UI components. See [Build a Lightning App Using Agentforce Vibes](https://developer.salesforce.com/docs/platform/einstein-for-devs/guide/lexapp-overview.html).
+### Deploy the Apex Controller
 
-## Additional Resources
+```bash
+sf project deploy start --source-dir force-app/main/default/classes/SecurityAlertController.cls
+```
 
-- [Agentforce Vibes Developer Guide](https://developer.salesforce.com/docs/platform/einstein-for-devs/guide/einstein-overview.html)
-- [Salesforce CLI Installation Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/)
-- [Salesforce CLI Plugin Development Guide](https://developer.salesforce.com/docs/platform/salesforce-cli-plugin/guide/conceptual-overview.html)
-- [Salesforce VS Code Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
+### Deploy the Lightning Web Component
 
+```bash
+sf project deploy start --source-dir force-app/main/default/lwc/securityDashboard
+```
+
+## Using the Dashboard
+
+1. Open Salesforce.
+2. Navigate to the Lightning App Builder.
+3. Add the `securityDashboard` Lightning Web Component to your Lightning page.
+4. Save and activate the page.
+5. Open the dashboard.
+6. Create a security alert.
+7. Enter the threat information.
+8. Click **Create Security Alert**.
+9. The alert is stored in Salesforce.
+10. The dashboard refreshes and displays the new alert.
+
+## Future Enhancements
+
+The project can be extended with:
+
+* AI-based threat classification
+* Automated risk-score calculation
+* IP reputation checking
+* CVE integration
+* Automated alert prioritization
+* Email notifications
+* Alert status workflow
+* Security analytics and charts
+* Integration with external SIEM systems
+* Automated incident response
+* Role-based security access
+* AI-generated security recommendations
+
+## Learning Objectives
+
+This project demonstrates practical experience with:
+
+* Salesforce development
+* Apex programming
+* Lightning Web Components
+* SOQL
+* Salesforce custom objects
+* REST/API-oriented backend concepts
+* Event-driven UI updates
+* Cybersecurity alert management
+* Git and GitHub
+* Salesforce CLI deployment
+
+## Author
+
+**Kumud Singh**
+
+Cybersecurity / Software Engineering Project
+
+## License
+
+This project is intended for educational and portfolio purposes.
