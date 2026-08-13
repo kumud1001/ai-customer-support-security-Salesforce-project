@@ -1,0 +1,32 @@
+.summary-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.summary-card {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: #f3f3f3;
+    text-align: center;
+}
+
+.summary-card.critical {
+    background: #fce4e4;
+}
+
+.summary-card.high {
+    background: #fff0d6;
+}
+
+.summary-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.summary-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 0.25rem;
+}

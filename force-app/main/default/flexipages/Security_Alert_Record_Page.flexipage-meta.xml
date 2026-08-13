@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>Security Alert Record Page</masterLabel>
+    <sobjectType>Security_Alert__c</sobjectType>
+    <type>RecordPage</type>
+
+    <template>
+        <name>flexipage:recordHomeTemplateDesktop</name>
+    </template>
+
+    <flexiPageRegions>
+        <name>main</name>
+        <type>Region</type>
+
+        <itemInstances>
+            <componentInstance>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>Security_Alert_Fields</identifier>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>2</value>
+                </componentInstanceProperties>
+            </componentInstance>
+        </itemInstances>
+    </flexiPageRegions>
+</FlexiPage>
