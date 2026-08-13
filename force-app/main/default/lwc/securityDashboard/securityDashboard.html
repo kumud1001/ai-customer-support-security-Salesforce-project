@@ -219,6 +219,21 @@
                      onchange={handleFilterStatus}>
                     </lightning-combobox>
 
+                    <lightning-combobox
+                      label="Filter by Threat Type"
+                       value={filterThreatType}
+                     options={filterThreatTypeOptions}
+                     onchange={handleFilterThreatType}>
+                   </lightning-combobox>
+
+                   <div class="slds-m-top_small">
+    <lightning-button
+        label="Clear Filters"
+        icon-name="utility:clear"
+        onclick={handleClearFilters}>
+    </lightning-button>
+</div>
+
                     <lightning-datatable
                         key-field="Id"
                         data={filteredAlerts}

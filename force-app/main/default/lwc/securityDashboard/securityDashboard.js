@@ -65,6 +65,28 @@ handleFilterSeverity(event) {
     this.filterSeverity = event.detail.value;
 }
 
+filterThreatType = 'ALL';
+
+get filterThreatTypeOptions() {
+    const threatTypes = new Set(
+        this.alerts
+            .map(alert => alert.Threat_Type__c)
+            .filter(type => type)
+    );
+
+    return [
+        { label: 'All Threat Types', value: 'ALL' },
+        ...Array.from(threatTypes).map(type => ({
+            label: type,
+            value: type
+        }))
+    ];
+}
+
+handleFilterThreatType(event) {
+    this.filterThreatType = event.detail.value;
+}
+
 get filteredAlerts() {
     return this.alerts.filter(alert => {
 
@@ -76,7 +98,11 @@ get filteredAlerts() {
             this.filterStatus === 'ALL' ||
             alert.Status__c === this.filterStatus;
 
-        return severityMatch && statusMatch;
+        const threatTypeMatch =
+            this.filterThreatType === 'ALL' ||
+            alert.Threat_Type__c === this.filterThreatType;
+
+        return severityMatch && statusMatch && threatTypeMatch;
     });
 }
 filterStatus = 'ALL';
@@ -184,7 +210,11 @@ handleFilterStatus(event) {
     handleSeverity(event) {
         this.severity = event.target.value;
     }
-
+      handleClearFilters() {
+    this.filterSeverity = 'ALL';
+    this.filterStatus = 'ALL';
+    this.filterThreatType = 'ALL';
+      }
     handleAttackType(event) {
         this.attackType = event.target.value;
     }
