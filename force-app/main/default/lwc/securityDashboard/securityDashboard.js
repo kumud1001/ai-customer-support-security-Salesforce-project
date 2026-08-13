@@ -37,94 +37,23 @@ const COLUMNS = [
             hour: '2-digit',
             minute: '2-digit'
         }
+    },
+    {
+        type: 'button',
+        typeAttributes: {
+            label: 'View',
+            name: 'view',
+            title: 'View Alert',
+            variant: 'base'
+        }
     }
 ];
 
 export default class SecurityDashboard extends LightningElement {
 
-    severityOptions = [
-        { label: 'LOW', value: 'LOW' },
-        { label: 'MEDIUM', value: 'MEDIUM' },
-        { label: 'HIGH', value: 'HIGH' },
-        { label: 'CRITICAL', value: 'CRITICAL' }
-    ];
-
-    filterSeverity = 'ALL';
-
-get filterSeverityOptions() {
-    return [
-        { label: 'All Severities', value: 'ALL' },
-        { label: 'LOW', value: 'LOW' },
-        { label: 'MEDIUM', value: 'MEDIUM' },
-        { label: 'HIGH', value: 'HIGH' },
-        { label: 'CRITICAL', value: 'CRITICAL' }
-    ];
-}
-
-handleFilterSeverity(event) {
-    this.filterSeverity = event.detail.value;
-}
-
-filterThreatType = 'ALL';
-
-get filterThreatTypeOptions() {
-    const threatTypes = new Set(
-        this.alerts
-            .map(alert => alert.Threat_Type__c)
-            .filter(type => type)
-    );
-
-    return [
-        { label: 'All Threat Types', value: 'ALL' },
-        ...Array.from(threatTypes).map(type => ({
-            label: type,
-            value: type
-        }))
-    ];
-}
-
-handleFilterThreatType(event) {
-    this.filterThreatType = event.detail.value;
-}
-
-get filteredAlerts() {
-    return this.alerts.filter(alert => {
-
-        const severityMatch =
-            this.filterSeverity === 'ALL' ||
-            alert.Severity__c === this.filterSeverity;
-
-        const statusMatch =
-            this.filterStatus === 'ALL' ||
-            alert.Status__c === this.filterStatus;
-
-        const threatTypeMatch =
-            this.filterThreatType === 'ALL' ||
-            alert.Threat_Type__c === this.filterThreatType;
-
-        return severityMatch && statusMatch && threatTypeMatch;
-    });
-}
-filterStatus = 'ALL';
-
-get filterStatusOptions() {
-    return [
-        { label: 'All Statuses', value: 'ALL' },
-        { label: 'New', value: 'New' },
-        { label: 'Investigating', value: 'Investigating' },
-        { label: 'Resolved', value: 'Resolved' },
-        { label: 'Closed', value: 'Closed' }
-    ];
-}
-
-handleFilterStatus(event) {
-    this.filterStatus = event.detail.value;
-}
-    statusOptions = [
-        { label: 'New', value: 'New' },
-        { label: 'Investigating', value: 'Investigating' },
-        { label: 'Resolved', value: 'Resolved' }
-    ];
+    // =========================
+    // Component State
+    // =========================
 
     alerts = [];
     error;
@@ -133,7 +62,17 @@ handleFilterStatus(event) {
 
     columns = COLUMNS;
 
-    // Form fields
+    // =========================
+    // Alert Details
+    // =========================
+
+    selectedAlert = null;
+    showAlertDetails = false;
+
+    // =========================
+    // Form Fields
+    // =========================
+
     incidentName = '';
     threatType = '';
     riskScore = null;
@@ -143,11 +82,131 @@ handleFilterStatus(event) {
     description = '';
     recommendation = '';
 
-    // Status update fields
+    // =========================
+    // Severity Options
+    // =========================
+
+    severityOptions = [
+        { label: 'LOW', value: 'LOW' },
+        { label: 'MEDIUM', value: 'MEDIUM' },
+        { label: 'HIGH', value: 'HIGH' },
+        { label: 'CRITICAL', value: 'CRITICAL' }
+    ];
+
+    // =========================
+    // Status Options
+    // =========================
+
+    statusOptions = [
+        { label: 'New', value: 'New' },
+        { label: 'Investigating', value: 'Investigating' },
+        { label: 'Resolved', value: 'Resolved' },
+        { label: 'Closed', value: 'Closed' }
+    ];
+
+    // =========================
+    // Filters
+    // =========================
+
+    filterSeverity = 'ALL';
+    filterStatus = 'ALL';
+    filterThreatType = 'ALL';
+
+    get filterSeverityOptions() {
+        return [
+            { label: 'All Severities', value: 'ALL' },
+            { label: 'LOW', value: 'LOW' },
+            { label: 'MEDIUM', value: 'MEDIUM' },
+            { label: 'HIGH', value: 'HIGH' },
+            { label: 'CRITICAL', value: 'CRITICAL' }
+        ];
+    }
+
+    get filterStatusOptions() {
+        return [
+            { label: 'All Statuses', value: 'ALL' },
+            { label: 'New', value: 'New' },
+            { label: 'Investigating', value: 'Investigating' },
+            { label: 'Resolved', value: 'Resolved' },
+            { label: 'Closed', value: 'Closed' }
+        ];
+    }
+
+    get filterThreatTypeOptions() {
+
+        const threatTypes = new Set(
+            this.alerts
+                .map(alert => alert.Threat_Type__c)
+                .filter(type => type)
+        );
+
+        return [
+            { label: 'All Threat Types', value: 'ALL' },
+            ...Array.from(threatTypes).map(type => ({
+                label: type,
+                value: type
+            }))
+        ];
+    }
+
+    handleFilterSeverity(event) {
+        this.filterSeverity = event.detail.value;
+    }
+
+    handleFilterStatus(event) {
+        this.filterStatus = event.detail.value;
+    }
+
+    handleFilterThreatType(event) {
+        this.filterThreatType = event.detail.value;
+    }
+
+    handleClearFilters() {
+        this.filterSeverity = 'ALL';
+        this.filterStatus = 'ALL';
+        this.filterThreatType = 'ALL';
+    }
+
+    get filteredAlerts() {
+
+        return this.alerts.filter(alert => {
+
+            const severityMatch =
+                this.filterSeverity === 'ALL' ||
+                alert.Severity__c === this.filterSeverity;
+
+            const statusMatch =
+                this.filterStatus === 'ALL' ||
+                alert.Status__c === this.filterStatus;
+
+            const threatTypeMatch =
+                this.filterThreatType === 'ALL' ||
+                alert.Threat_Type__c === this.filterThreatType;
+
+            return severityMatch &&
+                   statusMatch &&
+                   threatTypeMatch;
+        });
+    }
+
+    // =========================
+    // Selected Alert / Status
+    // =========================
+
     selectedAlertId = '';
     selectedStatus = '';
 
-    // rest of your code...
+    get alertOptions() {
+
+        return this.alerts.map(alert => ({
+            label: `${alert.Threat_Type__c} - ${alert.Source_IP__c}`,
+            value: alert.Id
+        }));
+    }
+
+    // =========================
+    // Get Security Alerts
+    // =========================
 
     @wire(getSecurityAlerts)
     wiredAlerts(result) {
@@ -157,9 +216,12 @@ handleFilterStatus(event) {
         const { data, error } = result;
 
         if (data) {
+
             this.alerts = data;
             this.error = undefined;
+
         } else if (error) {
+
             this.error = error;
             this.alerts = [];
         }
@@ -167,29 +229,33 @@ handleFilterStatus(event) {
         this.isLoading = false;
     }
 
+    // =========================
+    // Dashboard Statistics
+    // =========================
+
     get totalAlerts() {
         return this.alerts.length;
     }
 
     get criticalAlerts() {
+
         return this.alerts.filter(
             alert => alert.Severity__c === 'CRITICAL'
         ).length;
     }
 
     get highRiskAlerts() {
+
         return this.alerts.filter(
             alert =>
                 alert.Severity__c === 'HIGH' ||
                 alert.Severity__c === 'CRITICAL'
         ).length;
     }
-    get alertOptions() {
-    return this.alerts.map(alert => ({
-        label: `${alert.Threat_Type__c} - ${alert.Source_IP__c}`,
-        value: alert.Id
-    }));
-}
+
+    // =========================
+    // Form Handlers
+    // =========================
 
     handleIncidentName(event) {
         this.incidentName = event.target.value;
@@ -210,21 +276,22 @@ handleFilterStatus(event) {
     handleSeverity(event) {
         this.severity = event.target.value;
     }
-      handleClearFilters() {
-    this.filterSeverity = 'ALL';
-    this.filterStatus = 'ALL';
-    this.filterThreatType = 'ALL';
-      }
+
     handleAttackType(event) {
         this.attackType = event.target.value;
     }
+
     handleDescription(event) {
-    this.description = event.target.value;
-}
+        this.description = event.target.value;
+    }
 
     handleRecommendation(event) {
-    this.recommendation = event.target.value;
-}
+        this.recommendation = event.target.value;
+    }
+
+    // =========================
+    // Create Security Alert
+    // =========================
 
     async handleCreateAlert() {
 
@@ -234,6 +301,7 @@ handleFilterStatus(event) {
         try {
 
             const result = await createSecurityAlert({
+
                 threatType: this.threatType,
                 severity: this.severity,
                 sourceIp: this.sourceIp,
@@ -242,9 +310,16 @@ handleFilterStatus(event) {
                 recommendation: this.recommendation
             });
 
-            console.log('Security Alert created:', result);
+            console.log(
+                'Security Alert created:',
+                result
+            );
 
-            await refreshApex(this.wiredAlertsResult);
+            await refreshApex(
+                this.wiredAlertsResult
+            );
+
+            // Clear form
 
             this.incidentName = '';
             this.threatType = '';
@@ -257,7 +332,11 @@ handleFilterStatus(event) {
 
         } catch (error) {
 
-            console.error('Error creating Security Alert:', error);
+            console.error(
+                'Error creating Security Alert:',
+                error
+            );
+
             this.error = error;
 
         } finally {
@@ -265,31 +344,84 @@ handleFilterStatus(event) {
             this.isLoading = false;
         }
     }
-    async handleRefresh() {
-    this.isLoading = true;
-    this.error = undefined;
 
-    try {
-        await refreshApex(this.wiredAlertsResult);
-    } catch (error) {
-        console.error('Error refreshing alerts:', error);
-        this.error = error;
-    } finally {
-        this.isLoading = false;
+    // =========================
+    // Refresh Alerts
+    // =========================
+
+    async handleRefresh() {
+
+        this.isLoading = true;
+        this.error = undefined;
+
+        try {
+
+            await refreshApex(
+                this.wiredAlertsResult
+            );
+
+        } catch (error) {
+
+            console.error(
+                'Error refreshing alerts:',
+                error
+            );
+
+            this.error = error;
+
+        } finally {
+
+            this.isLoading = false;
+        }
     }
-}
+
+    // =========================
+    // Alert Details
+    // =========================
+
+    handleRowAction(event) {
+
+        const actionName =
+            event.detail.action.name;
+
+        const row =
+            event.detail.row;
+
+        if (actionName === 'view') {
+
+            this.selectedAlert = row;
+            this.showAlertDetails = true;
+        }
+    }
+
+    handleCloseDetails() {
+
+        this.selectedAlert = null;
+        this.showAlertDetails = false;
+    }
+
+    // =========================
+    // Status Update
+    // =========================
 
     handleStatusChange(event) {
-        this.selectedStatus = event.target.value;
+
+        this.selectedStatus =
+            event.target.value;
     }
 
     handleAlertSelection(event) {
-        this.selectedAlertId = event.detail.value;
+
+        this.selectedAlertId =
+            event.detail.value;
     }
 
     async handleUpdateStatus() {
 
-        if (!this.selectedAlertId || !this.selectedStatus) {
+        if (
+            !this.selectedAlertId ||
+            !this.selectedStatus
+        ) {
             return;
         }
 
@@ -299,18 +431,26 @@ handleFilterStatus(event) {
         try {
 
             await updateAlertStatus({
+
                 alertId: this.selectedAlertId,
+
                 newStatus: this.selectedStatus
             });
 
-            await refreshApex(this.wiredAlertsResult);
+            await refreshApex(
+                this.wiredAlertsResult
+            );
 
             this.selectedAlertId = '';
             this.selectedStatus = '';
 
         } catch (error) {
 
-            console.error('Error updating alert status:', error);
+            console.error(
+                'Error updating alert status:',
+                error
+            );
+
             this.error = error;
 
         } finally {

@@ -5,7 +5,9 @@
 
         <div class="slds-p-around_medium">
 
+            <!-- ========================= -->
             <!-- Summary Cards -->
+            <!-- ========================= -->
             <div class="summary-container">
 
                 <div class="summary-card">
@@ -26,7 +28,9 @@
             </div>
 
 
+            <!-- ========================= -->
             <!-- Create Security Alert -->
+            <!-- ========================= -->
             <div class="slds-box slds-theme_default slds-m-top_medium">
 
                 <h2 class="slds-text-heading_medium slds-m-bottom_medium">
@@ -34,6 +38,16 @@
                 </h2>
 
                 <div class="slds-grid slds-wrap slds-gutters">
+
+                    <!-- Incident Name -->
+                    <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                        <lightning-input
+                            label="Incident Name"
+                            value={incidentName}
+                            onchange={handleIncidentName}
+                            required>
+                        </lightning-input>
+                    </div>
 
                     <!-- Threat Type -->
                     <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
@@ -82,14 +96,14 @@
                     </div>
 
                     <!-- Description -->
-                    <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
-                        <lightning-textarea
+                    <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                        <lightning-input
                             label="Description"
                             value={description}
                             onchange={handleDescription}
                             placeholder="Describe the security incident"
                             required>
-                        </lightning-textarea>
+                        </lightning-input>
                     </div>
 
                     <!-- AI Recommendation -->
@@ -106,65 +120,20 @@
 
                 <!-- Create Button -->
                 <div class="slds-m-top_medium">
-
                     <lightning-button
                         variant="brand"
                         label="Create Security Alert"
                         icon-name="utility:add"
                         onclick={handleCreateAlert}>
                     </lightning-button>
-
                 </div>
 
             </div>
 
 
-            <!-- Status Management -->
-            <div class="slds-box slds-theme_default slds-m-top_medium">
-
-                <h2 class="slds-text-heading_medium slds-m-bottom_medium">
-                    Update Alert Status
-                </h2>
-
-                <div class="slds-grid slds-wrap slds-gutters">
-
-                    <!-- Select Alert -->
-                    <div class="slds-col slds-size_1-of-2">
-                        <lightning-combobox
-                            label="Select Alert"
-                            value={selectedAlertId}
-                            options={alertOptions}
-                            onchange={handleAlertSelection}>
-                        </lightning-combobox>
-                    </div>
-
-                    <!-- Select Status -->
-                    <div class="slds-col slds-size_1-of-2">
-                        <lightning-combobox
-                            label="New Status"
-                            value={selectedStatus}
-                            options={statusOptions}
-                            onchange={handleStatusChange}>
-                        </lightning-combobox>
-                    </div>
-
-                </div>
-
-                <div class="slds-m-top_medium">
-
-                    <lightning-button
-                        variant="brand"
-                        label="Update Status"
-                        icon-name="utility:edit"
-                        onclick={handleUpdateStatus}>
-                    </lightning-button>
-
-                </div>
-
-            </div>
-
-
+            <!-- ========================= -->
             <!-- Refresh -->
+            <!-- ========================= -->
             <div class="slds-m-top_medium slds-m-bottom_medium">
 
                 <lightning-button
@@ -176,7 +145,9 @@
             </div>
 
 
+            <!-- ========================= -->
             <!-- Loading -->
+            <!-- ========================= -->
             <template if:true={isLoading}>
 
                 <lightning-spinner
@@ -186,7 +157,9 @@
             </template>
 
 
+            <!-- ========================= -->
             <!-- Error -->
+            <!-- ========================= -->
             <template if:true={error}>
 
                 <div class="slds-notify slds-notify_alert slds-theme_error">
@@ -196,7 +169,9 @@
             </template>
 
 
-            <!-- Alert Table -->
+            <!-- ========================= -->
+            <!-- Security Alerts -->
+            <!-- ========================= -->
             <template if:false={isLoading}>
 
                 <div class="slds-m-top_medium">
@@ -204,42 +179,134 @@
                     <h2 class="slds-text-heading_medium slds-m-bottom_small">
                         Security Alerts
                     </h2>
+
+
+                    <!-- Severity Filter -->
                     <div class="slds-m-bottom_medium">
-                    <lightning-combobox
-                     label="Filter by Severity"
-                    value={filterSeverity}
-                    options={filterSeverityOptions}
-                    onchange={handleFilterSeverity}>
-                         </lightning-combobox>
-                   </div>
-                   <lightning-combobox
-                      label="Filter by Status"
-                      value={filterStatus}
-                      options={filterStatusOptions}
-                     onchange={handleFilterStatus}>
-                    </lightning-combobox>
 
-                    <lightning-combobox
-                      label="Filter by Threat Type"
-                       value={filterThreatType}
-                     options={filterThreatTypeOptions}
-                     onchange={handleFilterThreatType}>
-                   </lightning-combobox>
+                        <lightning-combobox
+                            label="Filter by Severity"
+                            value={filterSeverity}
+                            options={filterSeverityOptions}
+                            onchange={handleFilterSeverity}>
+                        </lightning-combobox>
 
-                   <div class="slds-m-top_small">
-    <lightning-button
-        label="Clear Filters"
-        icon-name="utility:clear"
-        onclick={handleClearFilters}>
-    </lightning-button>
-</div>
+                    </div>
 
+
+                    <!-- Status Filter -->
+                    <div class="slds-m-bottom_medium">
+
+                        <lightning-combobox
+                            label="Filter by Status"
+                            value={filterStatus}
+                            options={filterStatusOptions}
+                            onchange={handleFilterStatus}>
+                        </lightning-combobox>
+
+                    </div>
+
+
+                    <!-- Threat Type Filter -->
+                    <div class="slds-m-bottom_medium">
+
+                        <lightning-combobox
+                            label="Filter by Threat Type"
+                            value={filterThreatType}
+                            options={filterThreatTypeOptions}
+                            onchange={handleFilterThreatType}>
+                        </lightning-combobox>
+
+                    </div>
+
+
+                    <!-- Clear Filters -->
+                    <div class="slds-m-bottom_medium">
+
+                        <lightning-button
+                            label="Clear Filters"
+                            icon-name="utility:clear"
+                            onclick={handleClearFilters}>
+                        </lightning-button>
+
+                    </div>
+
+
+                    <!-- Alert Table -->
                     <lightning-datatable
                         key-field="Id"
                         data={filteredAlerts}
                         columns={columns}
-                        hide-checkbox-column>
+                        hide-checkbox-column
+                        onrowaction={handleRowAction}>
                     </lightning-datatable>
+
+
+                    <!-- ========================= -->
+                    <!-- Alert Details -->
+                    <!-- ========================= -->
+                    <template if:true={showAlertDetails}>
+
+                        <div class="slds-box slds-m-top_medium">
+
+                            <h2 class="slds-text-heading_medium slds-m-bottom_medium">
+                                Security Alert Details
+                            </h2>
+
+                            <p class="slds-m-bottom_small">
+                                <strong>Threat Type:</strong>
+                                {selectedAlert.Threat_Type__c}
+                            </p>
+
+                            <p class="slds-m-bottom_small">
+                                <strong>Severity:</strong>
+                                {selectedAlert.Severity__c}
+                            </p>
+
+                            <p class="slds-m-bottom_small">
+                                <strong>Source IP:</strong>
+                                {selectedAlert.Source_IP__c}
+                            </p>
+
+                            <p class="slds-m-bottom_small">
+                                <strong>Risk Score:</strong>
+                                {selectedAlert.Risk_Score__c}
+                            </p>
+
+                            <p class="slds-m-bottom_small">
+                                <strong>Status:</strong>
+                                {selectedAlert.Status__c}
+                            </p>
+
+                            <p class="slds-m-bottom_small">
+                                <strong>Description:</strong>
+                                {selectedAlert.Description__c}
+                            </p>
+
+                            <p class="slds-m-bottom_small">
+                                <strong>AI Recommendation:</strong>
+                                {selectedAlert.AI_Recommendation__c}
+                            </p>
+
+                            <p class="slds-m-bottom_small">
+                                <strong>Detected At:</strong>
+                                {selectedAlert.Detected_At__c}
+                            </p>
+
+
+                            <!-- Close Details -->
+                            <div class="slds-m-top_medium">
+
+                                <lightning-button
+                                    label="Close Details"
+                                    onclick={handleCloseDetails}>
+                                </lightning-button>
+
+                            </div>
+
+                        </div>
+
+                    </template>
 
                 </div>
 
