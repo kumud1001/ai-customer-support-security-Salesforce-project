@@ -1,34 +1,7 @@
 public with sharing class SecurityAlertController {
 
-    @AuraEnabled
-    public static Id createSecurityAlert(
-        String threatType,
-        String severity,
-        String sourceIp,
-        Decimal riskScore,
-        String description,
-        String recommendation
-    ) {
-        Security_Alert__c alert = new Security_Alert__c();
-
-        alert.Threat_Type__c = threatType;
-        alert.Severity__c = severity;
-        alert.Source_IP__c = sourceIp;
-        alert.Risk_Score__c = riskScore;
-        alert.Description__c = description;
-        alert.AI_Recommendation__c = recommendation;
-
-        alert.Status__c = 'New';
-        alert.Detected_At__c = System.now();
-
-        insert alert;
-
-        return alert.Id;
-    }
-
     @AuraEnabled(cacheable=true)
     public static List<Security_Alert__c> getSecurityAlerts() {
-
         return [
             SELECT Id,
                    Name,
@@ -45,6 +18,52 @@ public with sharing class SecurityAlertController {
             LIMIT 100
         ];
     }
+
+
+    @AuraEnabled
+    public static Security_Alert__c createSecurityAlert(
+        String threatType,
+        String severity,
+        String sourceIP,
+        Decimal riskScore,
+        String description,
+        String recommendation
+    ) {
+
+        // Validate Risk Score
+        if (riskScore == null || riskScore < 0 || riskScore > 100) {
+            throw new AuraHandledException(
+                'Risk Score must be between 0 and 100.'
+            );
+        }
+
+        Security_Alert__c alert = new Security_Alert__c();
+
+        alert.Threat_Type__c = threatType;
+        alert.Source_IP__c = sourceIP;
+        alert.Risk_Score__c = riskScore;
+
+        // Automatically determine severity
+        if (riskScore <= 30) {
+            alert.Severity__c = 'LOW';
+        } else if (riskScore <= 60) {
+            alert.Severity__c = 'MEDIUM';
+        } else if (riskScore <= 80) {
+            alert.Severity__c = 'HIGH';
+        } else {
+            alert.Severity__c = 'CRITICAL';
+        }
+
+        alert.Description__c = description;
+        alert.AI_Recommendation__c = recommendation;
+        alert.Status__c = 'New';
+        alert.Detected_At__c = System.now();
+
+        insert alert;
+
+        return alert;
+    }
+
 
     @AuraEnabled
     public static Security_Alert__c updateAlertStatus(

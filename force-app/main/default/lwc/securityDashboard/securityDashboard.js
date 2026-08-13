@@ -190,6 +190,19 @@ export default class SecurityDashboard extends LightningElement {
             this.isLoading = false;
         }
     }
+    async handleRefresh() {
+    this.isLoading = true;
+    this.error = undefined;
+
+    try {
+        await refreshApex(this.wiredAlertsResult);
+    } catch (error) {
+        console.error('Error refreshing alerts:', error);
+        this.error = error;
+    } finally {
+        this.isLoading = false;
+    }
+}
 
     handleStatusChange(event) {
         this.selectedStatus = event.target.value;
