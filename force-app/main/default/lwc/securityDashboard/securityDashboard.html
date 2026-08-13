@@ -204,10 +204,24 @@
                     <h2 class="slds-text-heading_medium slds-m-bottom_small">
                         Security Alerts
                     </h2>
+                    <div class="slds-m-bottom_medium">
+                    <lightning-combobox
+                     label="Filter by Severity"
+                    value={filterSeverity}
+                    options={filterSeverityOptions}
+                    onchange={handleFilterSeverity}>
+                         </lightning-combobox>
+                   </div>
+                   <lightning-combobox
+                      label="Filter by Status"
+                      value={filterStatus}
+                      options={filterStatusOptions}
+                     onchange={handleFilterStatus}>
+                    </lightning-combobox>
 
                     <lightning-datatable
                         key-field="Id"
-                        data={alerts}
+                        data={filteredAlerts}
                         columns={columns}
                         hide-checkbox-column>
                     </lightning-datatable>

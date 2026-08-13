@@ -49,6 +49,51 @@ export default class SecurityDashboard extends LightningElement {
         { label: 'CRITICAL', value: 'CRITICAL' }
     ];
 
+    filterSeverity = 'ALL';
+
+get filterSeverityOptions() {
+    return [
+        { label: 'All Severities', value: 'ALL' },
+        { label: 'LOW', value: 'LOW' },
+        { label: 'MEDIUM', value: 'MEDIUM' },
+        { label: 'HIGH', value: 'HIGH' },
+        { label: 'CRITICAL', value: 'CRITICAL' }
+    ];
+}
+
+handleFilterSeverity(event) {
+    this.filterSeverity = event.detail.value;
+}
+
+get filteredAlerts() {
+    return this.alerts.filter(alert => {
+
+        const severityMatch =
+            this.filterSeverity === 'ALL' ||
+            alert.Severity__c === this.filterSeverity;
+
+        const statusMatch =
+            this.filterStatus === 'ALL' ||
+            alert.Status__c === this.filterStatus;
+
+        return severityMatch && statusMatch;
+    });
+}
+filterStatus = 'ALL';
+
+get filterStatusOptions() {
+    return [
+        { label: 'All Statuses', value: 'ALL' },
+        { label: 'New', value: 'New' },
+        { label: 'Investigating', value: 'Investigating' },
+        { label: 'Resolved', value: 'Resolved' },
+        { label: 'Closed', value: 'Closed' }
+    ];
+}
+
+handleFilterStatus(event) {
+    this.filterStatus = event.detail.value;
+}
     statusOptions = [
         { label: 'New', value: 'New' },
         { label: 'Investigating', value: 'Investigating' },
