@@ -1,3 +1,4 @@
+
 public with sharing class SecurityAlertAgent {
 
     public class TriageResult {
@@ -5,6 +6,7 @@ public with sharing class SecurityAlertAgent {
         @AuraEnabled public String classification;
         @AuraEnabled public String recommendation;
         @AuraEnabled public String nextAction;
+        @AuraEnabled public String updatedStatus;
     }
 
     @AuraEnabled
@@ -27,7 +29,10 @@ public with sharing class SecurityAlertAgent {
 
         TriageResult result = new TriageResult();
 
-        // Agent decision logic
+        // =========================================
+        // AI AGENT DECISION ENGINE
+        // =========================================
+
         if (alert.Risk_Score__c >= 80) {
 
             result.priority = 'CRITICAL';
@@ -38,6 +43,8 @@ public with sharing class SecurityAlertAgent {
 
             result.nextAction =
                 'Escalate to security analyst';
+
+            result.updatedStatus = 'Investigating';
 
         } else if (alert.Risk_Score__c >= 60) {
 
@@ -50,6 +57,8 @@ public with sharing class SecurityAlertAgent {
             result.nextAction =
                 'Start investigation';
 
+            result.updatedStatus = 'Investigating';
+
         } else if (alert.Risk_Score__c >= 30) {
 
             result.priority = 'MEDIUM';
@@ -61,6 +70,8 @@ public with sharing class SecurityAlertAgent {
             result.nextAction =
                 'Monitor alert';
 
+            result.updatedStatus = 'New';
+
         } else {
 
             result.priority = 'LOW';
@@ -71,8 +82,21 @@ public with sharing class SecurityAlertAgent {
 
             result.nextAction =
                 'Continue monitoring';
+
+            result.updatedStatus = 'New';
         }
+
+        // =========================================
+        // AGENT ACTION
+        // =========================================
+
+        alert.Status__c = result.updatedStatus;
+
+        alert.AI_Recommendation__c = result.recommendation;
+
+        update alert;
 
         return result;
     }
 }
+
