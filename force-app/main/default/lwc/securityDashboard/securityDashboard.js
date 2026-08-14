@@ -3,6 +3,7 @@ import getSecurityAlerts from '@salesforce/apex/SecurityAlertController.getSecur
 import createSecurityAlert from '@salesforce/apex/SecurityAlertController.createSecurityAlert';
 import updateAlertStatus from '@salesforce/apex/SecurityAlertController.updateAlertStatus';
 import { refreshApex } from '@salesforce/apex';
+import triageAlert from '@salesforce/apex/SecurityAlertAgent.triageAlert';
 
 const COLUMNS = [
     {
@@ -59,6 +60,10 @@ export default class SecurityDashboard extends LightningElement {
     error;
     isLoading = true;
     wiredAlertsResult;
+
+    agentResult = null;
+    agentLoading = false;
+    agentError = null;
 
     columns = COLUMNS;
 
@@ -289,6 +294,36 @@ export default class SecurityDashboard extends LightningElement {
         this.recommendation = event.target.value;
     }
 
+
+    async handleAgentTriage() {
+
+    if (!this.selectedAlert) {
+        return;
+    }
+
+    this.agentLoading = true;
+    this.agentError = null;
+    this.agentResult = null;
+
+    try {
+
+        this.agentResult = await triageAlert({
+            alertId: this.selectedAlert.Id
+        });
+
+    } catch (error) {
+
+        console.error('Agent triage error:', error);
+
+        this.agentError =
+            error?.body?.message ||
+            'Unable to analyze security alert.';
+
+    } finally {
+
+        this.agentLoading = false;
+    }
+}
     // =========================
     // Create Security Alert
     // =========================

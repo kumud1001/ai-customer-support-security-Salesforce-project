@@ -1,318 +1,531 @@
+
 <template>
-    <lightning-card
-        title="AI Security Operations Dashboard"
-        icon-name="utility:shield">
 
-        <div class="slds-p-around_medium">
+    <lightning-card title="AI Security Dashboard" icon-name="utility:shield">
 
-            <!-- ========================= -->
-            <!-- Summary Cards -->
-            <!-- ========================= -->
-            <div class="summary-container">
+        <!-- Loading -->
+        <template if:true={isLoading}>
+            <lightning-spinner
+                alternative-text="Loading security alerts">
+            </lightning-spinner>
+        </template>
 
-                <div class="summary-card">
-                    <div class="summary-title">Total Alerts</div>
-                    <div class="summary-value">{totalAlerts}</div>
-                </div>
+        <!-- ================================================= -->
+        <!-- CREATE SECURITY ALERT -->
+        <!-- ================================================= -->
 
-                <div class="summary-card critical">
-                    <div class="summary-title">Critical</div>
-                    <div class="summary-value">{criticalAlerts}</div>
-                </div>
+        <div class="slds-box slds-m-around_medium">
 
-                <div class="summary-card high">
-                    <div class="summary-title">High Risk</div>
-                    <div class="summary-value">{highRiskAlerts}</div>
-                </div>
+            <h2 class="slds-text-heading_medium slds-m-bottom_medium">
+                Create Security Alert
+            </h2>
 
-            </div>
+            <div class="slds-grid slds-wrap slds-gutters">
 
+                <!-- Incident Name -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
 
-            <!-- ========================= -->
-            <!-- Create Security Alert -->
-            <!-- ========================= -->
-            <div class="slds-box slds-theme_default slds-m-top_medium">
-
-                <h2 class="slds-text-heading_medium slds-m-bottom_medium">
-                    Create Security Alert
-                </h2>
-
-                <div class="slds-grid slds-wrap slds-gutters">
-
-                    <!-- Incident Name -->
-                    <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
-                        <lightning-input
-                            label="Incident Name"
-                            value={incidentName}
-                            onchange={handleIncidentName}
-                            required>
-                        </lightning-input>
-                    </div>
-
-                    <!-- Threat Type -->
-                    <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
-                        <lightning-input
-                            label="Threat Type"
-                            value={threatType}
-                            onchange={handleThreatType}
-                            placeholder="e.g. SQL Injection"
-                            required>
-                        </lightning-input>
-                    </div>
-
-                    <!-- Risk Score -->
-                    <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
-                        <lightning-input
-                            type="number"
-                            label="Risk Score"
-                            value={riskScore}
-                            onchange={handleRiskScore}
-                            min="0"
-                            max="100"
-                            required>
-                        </lightning-input>
-                    </div>
-
-                    <!-- Source IP -->
-                    <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
-                        <lightning-input
-                            label="Source IP"
-                            value={sourceIp}
-                            onchange={handleSourceIp}
-                            placeholder="e.g. 192.168.1.10"
-                            required>
-                        </lightning-input>
-                    </div>
-
-                    <!-- Severity -->
-                    <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
-                        <lightning-combobox
-                            label="Severity"
-                            value={severity}
-                            options={severityOptions}
-                            onchange={handleSeverity}
-                            required>
-                        </lightning-combobox>
-                    </div>
-
-                    <!-- Description -->
-                    <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
-                        <lightning-input
-                            label="Description"
-                            value={description}
-                            onchange={handleDescription}
-                            placeholder="Describe the security incident"
-                            required>
-                        </lightning-input>
-                    </div>
-
-                    <!-- AI Recommendation -->
-                    <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
-                        <lightning-textarea
-                            label="AI Recommendation"
-                            value={recommendation}
-                            onchange={handleRecommendation}
-                            placeholder="Recommended security action">
-                        </lightning-textarea>
-                    </div>
+                    <lightning-input
+                        label="Incident Name"
+                        value={incidentName}
+                        onchange={handleIncidentName}>
+                    </lightning-input>
 
                 </div>
 
-                <!-- Create Button -->
-                <div class="slds-m-top_medium">
-                    <lightning-button
-                        variant="brand"
-                        label="Create Security Alert"
-                        icon-name="utility:add"
-                        onclick={handleCreateAlert}>
-                    </lightning-button>
+                <!-- Threat Type -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+
+                    <lightning-input
+                        label="Threat Type"
+                        value={threatType}
+                        placeholder="Example: Brute Force, DDoS, SQL Injection"
+                        onchange={handleThreatType}>
+                    </lightning-input>
+
+                </div>
+
+                <!-- Source IP -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+
+                    <lightning-input
+                        label="Source IP"
+                        value={sourceIp}
+                        placeholder="Example: 192.168.1.40"
+                        onchange={handleSourceIp}>
+                    </lightning-input>
+
+                </div>
+
+                <!-- Risk Score -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+
+                    <lightning-input
+                        type="number"
+                        label="Risk Score"
+                        min="0"
+                        max="100"
+                        value={riskScore}
+                        onchange={handleRiskScore}>
+                    </lightning-input>
+
+                </div>
+
+                <!-- Severity -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+
+                    <lightning-combobox
+                        label="Severity"
+                        value={severity}
+                        options={severityOptions}
+                        onchange={handleSeverity}>
+                    </lightning-combobox>
+
+                </div>
+
+                <!-- Attack Type -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+
+                    <lightning-input
+                        label="Attack Type"
+                        value={attackType}
+                        placeholder="Example: Network Attack"
+                        onchange={handleAttackType}>
+                    </lightning-input>
+
+                </div>
+
+                <!-- Description -->
+                <div class="slds-col slds-size_1-of-1">
+
+                    <lightning-textarea
+                        label="Description"
+                        value={description}
+                        onchange={handleDescription}>
+                    </lightning-textarea>
+
+                </div>
+
+                <!-- Recommendation -->
+                <div class="slds-col slds-size_1-of-1">
+
+                    <lightning-textarea
+                        label="AI Recommendation"
+                        value={recommendation}
+                        onchange={handleRecommendation}>
+                    </lightning-textarea>
+
                 </div>
 
             </div>
 
-
-            <!-- ========================= -->
-            <!-- Refresh -->
-            <!-- ========================= -->
-            <div class="slds-m-top_medium slds-m-bottom_medium">
+            <div class="slds-m-top_medium">
 
                 <lightning-button
-                    label="Refresh Alerts"
-                    icon-name="utility:refresh"
-                    onclick={handleRefresh}>
+                    label="Create Security Alert"
+                    variant="brand"
+                    onclick={handleCreateAlert}>
                 </lightning-button>
 
             </div>
 
-
-            <!-- ========================= -->
-            <!-- Loading -->
-            <!-- ========================= -->
-            <template if:true={isLoading}>
-
-                <lightning-spinner
-                    alternative-text="Loading security alerts">
-                </lightning-spinner>
-
-            </template>
+        </div>
 
 
-            <!-- ========================= -->
-            <!-- Error -->
-            <!-- ========================= -->
-            <template if:true={error}>
+        <!-- ================================================= -->
+        <!-- SUMMARY CARDS -->
+        <!-- ================================================= -->
 
-                <div class="slds-notify slds-notify_alert slds-theme_error">
-                    Unable to load security alerts.
-                </div>
+        <div class="slds-grid slds-wrap slds-gutters slds-p-around_medium">
 
-            </template>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
 
+                <div class="slds-box slds-theme_shade">
 
-            <!-- ========================= -->
-            <!-- Security Alerts -->
-            <!-- ========================= -->
-            <template if:false={isLoading}>
+                    <p class="slds-text-title">
+                        Total Alerts
+                    </p>
 
-                <div class="slds-m-top_medium">
-
-                    <h2 class="slds-text-heading_medium slds-m-bottom_small">
-                        Security Alerts
-                    </h2>
-
-
-                    <!-- Severity Filter -->
-                    <div class="slds-m-bottom_medium">
-
-                        <lightning-combobox
-                            label="Filter by Severity"
-                            value={filterSeverity}
-                            options={filterSeverityOptions}
-                            onchange={handleFilterSeverity}>
-                        </lightning-combobox>
-
-                    </div>
-
-
-                    <!-- Status Filter -->
-                    <div class="slds-m-bottom_medium">
-
-                        <lightning-combobox
-                            label="Filter by Status"
-                            value={filterStatus}
-                            options={filterStatusOptions}
-                            onchange={handleFilterStatus}>
-                        </lightning-combobox>
-
-                    </div>
-
-
-                    <!-- Threat Type Filter -->
-                    <div class="slds-m-bottom_medium">
-
-                        <lightning-combobox
-                            label="Filter by Threat Type"
-                            value={filterThreatType}
-                            options={filterThreatTypeOptions}
-                            onchange={handleFilterThreatType}>
-                        </lightning-combobox>
-
-                    </div>
-
-
-                    <!-- Clear Filters -->
-                    <div class="slds-m-bottom_medium">
-
-                        <lightning-button
-                            label="Clear Filters"
-                            icon-name="utility:clear"
-                            onclick={handleClearFilters}>
-                        </lightning-button>
-
-                    </div>
-
-
-                    <!-- Alert Table -->
-                    <lightning-datatable
-                        key-field="Id"
-                        data={filteredAlerts}
-                        columns={columns}
-                        hide-checkbox-column
-                        onrowaction={handleRowAction}>
-                    </lightning-datatable>
-
-
-                    <!-- ========================= -->
-                    <!-- Alert Details -->
-                    <!-- ========================= -->
-                    <template if:true={showAlertDetails}>
-
-                        <div class="slds-box slds-m-top_medium">
-
-                            <h2 class="slds-text-heading_medium slds-m-bottom_medium">
-                                Security Alert Details
-                            </h2>
-
-                            <p class="slds-m-bottom_small">
-                                <strong>Threat Type:</strong>
-                                {selectedAlert.Threat_Type__c}
-                            </p>
-
-                            <p class="slds-m-bottom_small">
-                                <strong>Severity:</strong>
-                                {selectedAlert.Severity__c}
-                            </p>
-
-                            <p class="slds-m-bottom_small">
-                                <strong>Source IP:</strong>
-                                {selectedAlert.Source_IP__c}
-                            </p>
-
-                            <p class="slds-m-bottom_small">
-                                <strong>Risk Score:</strong>
-                                {selectedAlert.Risk_Score__c}
-                            </p>
-
-                            <p class="slds-m-bottom_small">
-                                <strong>Status:</strong>
-                                {selectedAlert.Status__c}
-                            </p>
-
-                            <p class="slds-m-bottom_small">
-                                <strong>Description:</strong>
-                                {selectedAlert.Description__c}
-                            </p>
-
-                            <p class="slds-m-bottom_small">
-                                <strong>AI Recommendation:</strong>
-                                {selectedAlert.AI_Recommendation__c}
-                            </p>
-
-                            <p class="slds-m-bottom_small">
-                                <strong>Detected At:</strong>
-                                {selectedAlert.Detected_At__c}
-                            </p>
-
-
-                            <!-- Close Details -->
-                            <div class="slds-m-top_medium">
-
-                                <lightning-button
-                                    label="Close Details"
-                                    onclick={handleCloseDetails}>
-                                </lightning-button>
-
-                            </div>
-
-                        </div>
-
-                    </template>
+                    <p class="slds-text-heading_large">
+                        {totalAlerts}
+                    </p>
 
                 </div>
 
-            </template>
+            </div>
+
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+
+                <div class="slds-box slds-theme_shade">
+
+                    <p class="slds-text-title">
+                        Critical Alerts
+                    </p>
+
+                    <p class="slds-text-heading_large">
+                        {criticalAlerts}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+
+                <div class="slds-box slds-theme_shade">
+
+                    <p class="slds-text-title">
+                        High Risk
+                    </p>
+
+                    <p class="slds-text-heading_large">
+                        {highRiskAlerts}
+                    </p>
+
+                </div>
+
+            </div>
 
         </div>
 
+
+        <!-- ================================================= -->
+        <!-- FILTERS -->
+        <!-- ================================================= -->
+
+        <div class="slds-grid slds-wrap slds-gutters slds-p-around_medium">
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+
+                <lightning-combobox
+                    label="Filter by Severity"
+                    value={filterSeverity}
+                    options={filterSeverityOptions}
+                    onchange={handleFilterSeverity}>
+                </lightning-combobox>
+
+            </div>
+
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+
+                <lightning-combobox
+                    label="Filter by Status"
+                    value={filterStatus}
+                    options={filterStatusOptions}
+                    onchange={handleFilterStatus}>
+                </lightning-combobox>
+
+            </div>
+
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+
+                <lightning-combobox
+                    label="Filter by Threat Type"
+                    value={filterThreatType}
+                    options={filterThreatTypeOptions}
+                    onchange={handleFilterThreatType}>
+                </lightning-combobox>
+
+            </div>
+
+        </div>
+
+
+        <!-- FILTER BUTTONS -->
+
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+
+            <lightning-button
+                label="Clear Filters"
+                onclick={handleClearFilters}>
+            </lightning-button>
+
+            <lightning-button
+                class="slds-m-left_small"
+                label="Refresh Alerts"
+                icon-name="utility:refresh"
+                onclick={handleRefresh}>
+            </lightning-button>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- SECURITY ALERT TABLE -->
+        <!-- ================================================= -->
+
+        <div class="slds-p-around_medium">
+
+            <lightning-datatable
+                key-field="Id"
+                data={filteredAlerts}
+                columns={columns}
+                hide-checkbox-column
+                onrowaction={handleRowAction}>
+            </lightning-datatable>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- ALERT DETAILS -->
+        <!-- ================================================= -->
+
+        <template if:true={showAlertDetails}>
+
+            <div class="slds-box slds-m-around_medium">
+
+                <div class="slds-grid slds-grid_align-spread">
+
+                    <h2 class="slds-text-heading_medium">
+                        Security Alert Details
+                    </h2>
+
+                    <lightning-button-icon
+                        icon-name="utility:close"
+                        alternative-text="Close"
+                        title="Close"
+                        onclick={handleCloseDetails}>
+                    </lightning-button-icon>
+
+                </div>
+
+
+                <!-- Incident Name -->
+
+                <div class="slds-m-top_medium">
+
+                    <p>
+                        <strong>Incident Name:</strong>
+                        {selectedAlert.Name}
+                    </p>
+
+                </div>
+
+
+                <!-- Threat Type -->
+
+                <div class="slds-m-top_small">
+
+                    <p>
+                        <strong>Threat Type:</strong>
+                        {selectedAlert.Threat_Type__c}
+                    </p>
+
+                </div>
+
+
+                <!-- Severity -->
+
+                <div class="slds-m-top_small">
+
+                    <p>
+                        <strong>Severity:</strong>
+                        {selectedAlert.Severity__c}
+                    </p>
+
+                </div>
+
+
+                <!-- Source IP -->
+
+                <div class="slds-m-top_small">
+
+                    <p>
+                        <strong>Source IP:</strong>
+                        {selectedAlert.Source_IP__c}
+                    </p>
+
+                </div>
+
+
+                <!-- Risk Score -->
+
+                <div class="slds-m-top_small">
+
+                    <p>
+                        <strong>Risk Score:</strong>
+                        {selectedAlert.Risk_Score__c}
+                    </p>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="slds-m-top_small">
+
+                    <p>
+                        <strong>Status:</strong>
+                        {selectedAlert.Status__c}
+                    </p>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="slds-m-top_small">
+
+                    <p>
+                        <strong>Description:</strong>
+                    </p>
+
+                    <p>
+                        {selectedAlert.Description__c}
+                    </p>
+
+                </div>
+
+
+                <!-- Existing Recommendation -->
+
+                <div class="slds-m-top_small">
+
+                    <p>
+                        <strong>Existing AI Recommendation:</strong>
+                    </p>
+
+                    <p>
+                        {selectedAlert.AI_Recommendation__c}
+                    </p>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- AGENT BUTTON -->
+                <!-- ================================================= -->
+
+                <div class="slds-m-top_medium">
+
+                    <lightning-button
+                        label="Analyze with AI Agent"
+                        variant="brand"
+                        icon-name="utility:einstein"
+                        onclick={handleAgentTriage}
+                        disabled={agentLoading}>
+                    </lightning-button>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- AGENT LOADING -->
+                <!-- ================================================= -->
+
+                <template if:true={agentLoading}>
+
+                    <div class="slds-m-top_medium">
+
+                        <lightning-spinner
+                            alternative-text="AI Agent analyzing">
+                        </lightning-spinner>
+
+                        <p class="slds-m-top_small">
+                            AI Agent is analyzing this security alert...
+                        </p>
+
+                    </div>
+
+                </template>
+
+
+                <!-- ================================================= -->
+                <!-- AGENT RESULT -->
+                <!-- ================================================= -->
+
+                <template if:true={agentResult}>
+
+                    <div class="slds-box slds-theme_shade slds-m-top_medium">
+
+                        <h3 class="slds-text-heading_small slds-m-bottom_medium">
+                            AI Agent Analysis
+                        </h3>
+
+
+                        <div class="slds-m-bottom_small">
+
+                            <p>
+                                <strong>Priority:</strong>
+                                {agentResult.priority}
+                            </p>
+
+                        </div>
+
+
+                        <div class="slds-m-bottom_small">
+
+                            <p>
+                                <strong>Classification:</strong>
+                                {agentResult.classification}
+                            </p>
+
+                        </div>
+
+
+                        <div class="slds-m-bottom_small">
+
+                            <p>
+                                <strong>Recommendation:</strong>
+                                {agentResult.recommendation}
+                            </p>
+
+                        </div>
+
+
+                        <div>
+
+                            <p>
+                                <strong>Next Action:</strong>
+                                {agentResult.nextAction}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </template>
+
+
+                <!-- ================================================= -->
+                <!-- AGENT ERROR -->
+                <!-- ================================================= -->
+
+                <template if:true={agentError}>
+
+                    <div class="slds-text-color_error slds-m-top_medium">
+
+                        {agentError}
+
+                    </div>
+
+                </template>
+
+            </div>
+
+        </template>
+
+
+        <!-- ================================================= -->
+        <!-- GENERAL ERROR -->
+        <!-- ================================================= -->
+
+        <template if:true={error}>
+
+            <div class="slds-text-color_error slds-p-around_medium">
+
+                Error loading security alerts.
+
+            </div>
+
+        </template>
+
     </lightning-card>
+
 </template>
+
