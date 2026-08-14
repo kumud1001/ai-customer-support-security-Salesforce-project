@@ -3,12 +3,16 @@
 
     <lightning-card title="AI Security Dashboard" icon-name="utility:shield">
 
-        <!-- Loading -->
+        <!-- ================================================= -->
+        <!-- LOADING -->
+        <!-- ================================================= -->
+
         <template if:true={isLoading}>
             <lightning-spinner
                 alternative-text="Loading security alerts">
             </lightning-spinner>
         </template>
+
 
         <!-- ================================================= -->
         <!-- CREATE SECURITY ALERT -->
@@ -33,6 +37,7 @@
 
                 </div>
 
+
                 <!-- Threat Type -->
                 <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
 
@@ -45,6 +50,7 @@
 
                 </div>
 
+
                 <!-- Source IP -->
                 <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
 
@@ -56,6 +62,7 @@
                     </lightning-input>
 
                 </div>
+
 
                 <!-- Risk Score -->
                 <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
@@ -71,6 +78,7 @@
 
                 </div>
 
+
                 <!-- Severity -->
                 <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
 
@@ -82,6 +90,7 @@
                     </lightning-combobox>
 
                 </div>
+
 
                 <!-- Attack Type -->
                 <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
@@ -95,6 +104,7 @@
 
                 </div>
 
+
                 <!-- Description -->
                 <div class="slds-col slds-size_1-of-1">
 
@@ -106,7 +116,8 @@
 
                 </div>
 
-                <!-- Recommendation -->
+
+                <!-- AI Recommendation -->
                 <div class="slds-col slds-size_1-of-1">
 
                     <lightning-textarea
@@ -118,6 +129,9 @@
                 </div>
 
             </div>
+
+
+            <!-- Create Button -->
 
             <div class="slds-m-top_medium">
 
@@ -138,6 +152,8 @@
 
         <div class="slds-grid slds-wrap slds-gutters slds-p-around_medium">
 
+            <!-- Total -->
+
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
 
                 <div class="slds-box slds-theme_shade">
@@ -155,6 +171,8 @@
             </div>
 
 
+            <!-- Critical -->
+
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
 
                 <div class="slds-box slds-theme_shade">
@@ -171,6 +189,8 @@
 
             </div>
 
+
+            <!-- High -->
 
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
 
@@ -197,6 +217,8 @@
 
         <div class="slds-grid slds-wrap slds-gutters slds-p-around_medium">
 
+            <!-- Severity -->
+
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
 
                 <lightning-combobox
@@ -209,6 +231,8 @@
             </div>
 
 
+            <!-- Status -->
+
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
 
                 <lightning-combobox
@@ -220,6 +244,8 @@
 
             </div>
 
+
+            <!-- Threat Type -->
 
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
 
@@ -235,7 +261,9 @@
         </div>
 
 
+        <!-- ================================================= -->
         <!-- FILTER BUTTONS -->
+        <!-- ================================================= -->
 
         <div class="slds-p-horizontal_medium slds-p-bottom_medium">
 
@@ -278,6 +306,8 @@
         <template if:true={showAlertDetails}>
 
             <div class="slds-box slds-m-around_medium">
+
+                <!-- Header -->
 
                 <div class="slds-grid slds-grid_align-spread">
 
@@ -382,7 +412,7 @@
                 </div>
 
 
-                <!-- Existing Recommendation -->
+                <!-- Existing AI Recommendation -->
 
                 <div class="slds-m-top_small">
 
@@ -398,7 +428,7 @@
 
 
                 <!-- ================================================= -->
-                <!-- AGENT BUTTON -->
+                <!-- AI AGENT BUTTON -->
                 <!-- ================================================= -->
 
                 <div class="slds-m-top_medium">
@@ -415,7 +445,7 @@
 
 
                 <!-- ================================================= -->
-                <!-- AGENT LOADING -->
+                <!-- AI AGENT LOADING -->
                 <!-- ================================================= -->
 
                 <template if:true={agentLoading}>
@@ -436,7 +466,7 @@
 
 
                 <!-- ================================================= -->
-                <!-- AGENT RESULT -->
+                <!-- AI AGENT RESULT -->
                 <!-- ================================================= -->
 
                 <template if:true={agentResult}>
@@ -448,6 +478,8 @@
                         </h3>
 
 
+                        <!-- Priority -->
+
                         <div class="slds-m-bottom_small">
 
                             <p>
@@ -457,6 +489,8 @@
 
                         </div>
 
+
+                        <!-- Classification -->
 
                         <div class="slds-m-bottom_small">
 
@@ -468,6 +502,8 @@
                         </div>
 
 
+                        <!-- Recommendation -->
+
                         <div class="slds-m-bottom_small">
 
                             <p>
@@ -478,7 +514,9 @@
                         </div>
 
 
-                        <div>
+                        <!-- Next Action -->
+
+                        <div class="slds-m-bottom_small">
 
                             <p>
                                 <strong>Next Action:</strong>
@@ -487,13 +525,34 @@
 
                         </div>
 
+
+                        <!-- ================================================= -->
+                        <!-- TASK CREATED -->
+                        <!-- ================================================= -->
+
+                        <template if:true={agentResult.taskCreated}>
+
+                            <div class="slds-box slds-theme_success slds-m-top_medium">
+
+                                <p class="slds-text-heading_small">
+                                    Investigation Task Created
+                                </p>
+
+                                <p class="slds-m-top_small">
+                                    {agentResult.taskMessage}
+                                </p>
+
+                            </div>
+
+                        </template>
+
                     </div>
 
                 </template>
 
 
                 <!-- ================================================= -->
-                <!-- AGENT ERROR -->
+                <!-- AI AGENT ERROR -->
                 <!-- ================================================= -->
 
                 <template if:true={agentError}>

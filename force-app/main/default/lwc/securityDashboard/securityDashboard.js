@@ -295,34 +295,29 @@ export default class SecurityDashboard extends LightningElement {
     }
 
 
-    async handleAgentTriage() {
-
-    if (!this.selectedAlert) {
-        return;
-    }
-
+    handleAgentTriage() {
     this.agentLoading = true;
     this.agentError = null;
     this.agentResult = null;
 
-    try {
+    triageAlert({ alertId: this.selectedAlert.Id })
+        .then(result => {
+            console.log('AI AGENT RESULT:', JSON.stringify(result));
 
-        this.agentResult = await triageAlert({
-            alertId: this.selectedAlert.Id
+            this.agentResult = result;
+            this.agentLoading = false;
+
+            this.loadAlerts();
+        })
+        .catch(error => {
+            console.error('AI AGENT ERROR:', error);
+
+            this.agentError =
+                error?.body?.message ||
+                'Unable to analyze security alert';
+
+            this.agentLoading = false;
         });
-
-    } catch (error) {
-
-        console.error('Agent triage error:', error);
-
-        this.agentError =
-            error?.body?.message ||
-            'Unable to analyze security alert.';
-
-    } finally {
-
-        this.agentLoading = false;
-    }
 }
     // =========================
     // Create Security Alert
